@@ -1,4 +1,3 @@
-// Handle signup form submission
 document.getElementById('signupForm').addEventListener('submit', function(event) {
     event.preventDefault();
     
