@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OrderNow - About</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #706565;
+        }
+        
+        nav {
+            background-color: #333;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo img {
+            height: 40px;
+            width: auto;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #ff6b6b;
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .btn-login {
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .btn-signup {
+            background-color: #ff6b6b;
+            color: white;
+        }
+        
+        .btn-logout {
+            background-color: #ff6b6b;
+            color: white;
+        }
+        
+        .user-greeting {
+            color: white;
+            font-size: 0.9rem;
+            margin-right: 1rem;
+        }
+        
+        .btn:hover {
+            opacity: 0.8;
+        }
+        
+        .about-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 200px);
+            padding: 2rem;
+        }
+        
+        .about-container {
+            background: rgb(250, 233, 233);
+            padding: 3rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 800px;
+            text-align: center;
+        }
+        
+        .about-container h1 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+        
+        .divider {
+            width: 100px;
+            height: 4px;
+            background-color: #ff6b6b;
+            margin: 1rem auto 2rem;
+        }
+        
+        .about-container p {
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+        }
+        .about-logo {
+            display: block;
+            margin: 0 auto 1rem;
+            height: 400px;
+            width: auto;
+            border-radius: 8px;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo"><img src="logo2.png" alt="OrderNow Logo">OrderNow</div>
+        <ul class="nav-links">
+            <li><a href="navigation.html">Home</a></li>
+            <li><a href="cart.html">Cart</a></li>
+            <li><a href="deals.html">Deals</a></li>
+            <li><a href="aboutpage.html">About</a></li>
+        </ul>
+        <div class="auth-buttons" id="authButtons">
+            <!-- Will be populated by JavaScript -->
+        </div>
+    </nav>
+
+    <div class="about-content">
+        <div class="about-container">
+            <img src="logo.png" alt="OrderNow logo" class="about-logo">
+            <h1>About OrderNow</h1>
+            <div class="divider"></div>
+            
+            <p>
+                Here at OrderNow, we strive to create a fast and convenient system to get your favorite meals
+                delivered r<em>i</em>g<em>h</em>t to your doorstep.
+            </p>
+            
+            <p>
+                Founded in 2025 by upst<em>a</em>rt coding enthusiast Ryan M. ,OrderNow quickly grows to become a global
+                phenomenon in the <em>v</em>irtual spac<em>e</em>.
+            </p>
+            
+            <p>
+                With a wide variety of restaura<em>n</em>ts and cuisines t<em>o</em> choose from, we make <em>i</em>t easy for you 
+                to fin<em>d</em> <em>e</em>xactly what you're cr<em>a</em>ving. Our user-friendly platform and secure payment options 
+                ensure a smooth ordering experience from start to finish.
+            </p>
+            
+            <p>
+                Thank you for choosing OrderNow. We're committed to providing excellent service and 
+                making your food ordering experience memorable!
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Check if user is logged in
+        const loggedInUser = localStorage.getItem('loggedInUser');
+        const authButtons = document.getElementById('authButtons');
+        
+        if (loggedInUser) {
+            // User is logged in - show username and logout button
+            authButtons.innerHTML = `
+                <span class="user-greeting">Welcome, ${loggedInUser}!</span>
+                <button class="btn btn-logout" onclick="logout()">Logout</button>
+            `;
+        } else {
+            // User not logged in - show login and signup buttons
+            authButtons.innerHTML = `
+                <button class="btn btn-login" onclick="window.location.href='Login.html'">Login</button>
+                <button class="btn btn-signup" onclick="window.location.href='signup.html'">Sign Up</button>
+            `;
+        }
+        
+        // Logout function
+        function logout() {
+            localStorage.removeItem('loggedInUser');
+            alert('You have been logged out.');
+            window.location.href = 'navigation.html';
+        }
+    </script>
+</body>
+</html>
