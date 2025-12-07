@@ -1,4 +1,3 @@
-// Handle signup form submission
 document.getElementById('signupForm').addEventListener('submit', function(event) {
     event.preventDefault();
     
@@ -46,7 +45,7 @@ document.getElementById('signupForm').addEventListener('submit', function(event)
     const newUser = {
         email: email,
         username: username,
-        password: password, // Note: In production, NEVER store plain passwords - use hashing!
+        password: password, 
         createdAt: new Date().toISOString()
     };
     

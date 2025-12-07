@@ -1,45 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!--Code for the title-->
-<title>Quick and Easy Food Ordering</title>
-<style>
-    body {
-        background-color: #E39D8F ; /*pinkish color*/
-    }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - OrderNow</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #706565;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .login-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: bold;
+        }
+        
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #ff6b6b;
+        }
+        
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+        
+        button:hover {
+            background-color: #ff5252;
+        }
+        
+        .login-link {
+            text-align: center;
+            margin-top: 1rem;
+        }
+        
+        .login-link a {
+            color: #ff6b6b;
+            text-decoration: none;
+        }
+        
+        .logo-img {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 1.5rem;
+            display: block;
+        }
+    </style>
 </head>
 <body>
-<!--Code for the headings-->
- <h1>User Login</h1>
- <p>Enter Your Credentials Below</p>
- <h3></h3>
- <h4></h4>
- <h5></h5>
- <h6></h6> <br>
-<!--Code for the paragraph-->
-<body>
-<h2></h2>
-<form onsubmit="handlelogin(event)">
- <label for="usrname">Username:</label><br>
- <input type="text" id="usrname" name="usrname" value=""><br>
- <label for="pword">Password:</label><br>
- <input type="password" id="pword" name="pword" value=""><br><br>
- <input type="submit" value="Submit">
-</form>
+    <div class="login-container">
+        <img src="logo.png" alt="OrderNow Logo" class="logo-img">
+        <h1>User Login</h1>
+        <form onsubmit="handlelogin(event)">
+            
+            <div class="form-group">
+                <label for="usrname">Username:</label>
+                <input type="text" id="usrname" name="usrname" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="pword">Password:</label>
+                <input type="password" id="pword" name="pword" required>
+            </div>
+            
+            <button type="submit">Login</button>
+        </form>
+        
+        <div class="signup-link">
+            Don't have an account? <a href="signup.html">Signup here</a>
+        </div>
+    </div>
 <script>
     function handlelogin(event) {
-        event.preventDefault();
-        const username = document.getElementById('usrname').value;
-        const password = document.getElementById('pword').value;
-        if (username === 'Admin' && password === 'Password123') {
+    event.preventDefault();
+    const username = document.getElementById('usrname').value;
+    const password = document.getElementById('pword').value;
+    
+    if (username === 'Admin' && password === 'Password123') {
+        // Store username in localStorage
+        localStorage.setItem('loggedInUser', username);
+        alert('Login successful!');
+        window.location.href = 'navigation.html';
+    } else {
+        // Check against registered users
+        let users = JSON.parse(localStorage.getItem('ordernowUsers')) || [];
+        let user = users.find(u => u.username === username && u.password === password);
+        
+        if (user) {
+            // Store username in localStorage
+            localStorage.setItem('loggedInUser', username);
             alert('Login successful!');
             window.location.href = 'navigation.html';
         } else {
             alert('Invalid username or password. Please Try Again.');
-
         }
-        }
-    
+    }
+}
 </script>
 </body>

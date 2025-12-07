@@ -13,7 +13,7 @@
         
         body {
             font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
+            background-color: #706565;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -96,7 +96,7 @@
 <body>
     <div class="signup-container">
         <img src="logo.png" alt="OrderNow Logo" class="logo-img">
-        <h1>OrderNow Sign Up</h1>
+        <h1>Sign Up</h1>
         <form id="signupForm">
             <div class="form-group">
                 <label for="email">Email:</label>
@@ -148,7 +148,7 @@
             }
             
             // Get existing users from localStorage
-            let users = JSON.parse(localStorage.getItem('foodhubUsers')) || [];
+            let users = JSON.parse(localStorage.getItem('ordernowUsers')) || [];
             
             // Check if username already exists
             if (users.some(user => user.username === username)) {
@@ -167,7 +167,7 @@
             users.push(newUser);
             
             // Save to localStorage
-            localStorage.setItem('foodhubUsers', JSON.stringify(users));
+            localStorage.setItem('ordernowUsers', JSON.stringify(users));
             
             alert('Sign up successful! You can now login.');
             window.location.href = 'Login.html';
