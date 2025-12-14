@@ -160,12 +160,21 @@
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
         }
         
         .menu-item img {
-            max-width: 100%;
-            border-radius: 4px;
-            margin-bottom: 0.5rem;
+            width: 100%;
+            max-width: 260px;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 6px;
+            display: block;
+            margin: 0 auto;
         }
         
         .menu-item h3 {
@@ -178,11 +187,24 @@
             font-size: 0.9rem;
             color: #666;
             margin-bottom: 0.5rem;
+            text-align: center;
         }
         
-        .menu-item span {
+        .menu-item .price {
             font-weight: bold;
-            color: #ff6b6b;
+            color: #0a0a0a;
+            margin-top: 0.25rem;
+        }
+
+        .menu-item button {
+            margin-top: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            border: none;
+            background: #ff6b6b;
+            color: #fff;
+            cursor: pointer;
+            display: inline-block;
         }
         
 
@@ -219,13 +241,12 @@
             <div class="divider"></div>
             
             <p>
-                <em>Browse our items below and add them to your cart!</em>
+                <em>Browse our items below!</em>
             </p>
             
         </div>
     </div>
 
-    <!-- Menu section -->
     <section class="menu-section">
         <div id="menu" class="menu-grid"></div>
     </section>
@@ -257,11 +278,18 @@
         }
     </script>
     <script>
-/* Example product catalog - replace with your items */
+
 const products = [
   { id: 'p1', title: 'Margherita Pizza', desc: 'Classic cheese & tomato', price: 9.99, img: 'Margherita-Pizza.webp' },
   { id: 'p2', title: 'Burger Deluxe', desc: 'Beef, lettuce, cheese', price: 8.49, img: 'burger.jpg' },
-  { id: 'p3', title: 'Caesar Salad', desc: 'Crisp greens & dressing', price: 6.25, img: 'salad.jpg' }
+  { id: 'p3', title: 'Caesar Salad', desc: 'Crisp greens & dressing', price: 6.25, img: 'salad.jpg' },
+  { id: 'p4', title: 'spaghetti bolognese', desc: 'Traditional Italian pasta', price: 10.50, img: 'spaghetti.jpg'},
+  { id: 'p5', title: 'Sushi Platter', desc: 'Assorted fresh sushi', price: 14.99, img: 'sushi.jpeg' },
+  { id: 'p6', title: 'Tacos', desc: 'Spicy chicken tacos', price: 7.75, img: 'tacos.webp' },
+  { id: 'p7', title: 'Chocolate Cake', desc: 'Rich & moist dessert', price: 5.50, img: 'cake.jpg' },
+  { id: 'p8', title: 'Grilled Salmon', desc: 'Served with veggies', price: 12.99, img: 'salmon.jpg' },
+  { id: 'p9', title: 'French Fries', desc: 'Crispy golden fries', price: 3.49, img: 'fries.webp' }
+
 ];
 
 const CART_KEY = 'orderNowCart';
@@ -300,19 +328,16 @@ function addToCart(productId) {
   }
   saveCart(cart);
   alert(`${product.title} added to cart`);
-  // Optional: update a cart counter in the UI
   updateCartCount();
 }
 
 function updateCartCount() {
   const cart = getCart();
   const totalQty = cart.reduce((s, i) => s + i.qty, 0);
-  // Example: place count into an element with id="cartCount"
   const el = document.getElementById('cartCount');
   if (el) el.textContent = totalQty;
 }
 
-/* Initialize */
 document.addEventListener('DOMContentLoaded', () => {
   renderMenu();
   updateCartCount();
