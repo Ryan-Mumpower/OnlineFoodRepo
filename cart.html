@@ -133,6 +133,21 @@
             margin-bottom: 1.5rem;
             font-size: 1rem;
         }
+
+        .cart-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 8px 0;
+        }
+
+        .cart-row div {
+            flex: 1;
+        }
+
+        .cart-row button {
+            margin-left: 8px;
+        }
     </style>
 </head>
 <body>
@@ -140,7 +155,7 @@
         <div class="logo"><img src="logo2.png" alt="OrderNow Logo">OrderNow</div>
         <ul class="nav-links">
             <li><a href="navigation.html">Home</a></li>
-            <li><a href="cart.html">Cart</a></li>
+            <li><a href="cart.html">Cart <span id="cartCount" class="cart-badge">0</span></a></li>
             <li><a href="deals.html">Deals</a></li>
             <li><a href="aboutpage.html">About</a></li>
         </ul>
@@ -157,6 +172,9 @@
             <p>
                 This is your cart
             </p>
+            
+            <div id="cartItems"></div>
+            <div id="cartTotals"></div>
             
         </div>
     </div>
@@ -186,6 +204,94 @@
             alert('You have been logged out.');
             window.location.href = 'navigation.html';
         }
+
+        const CART_KEY = 'orderNowCart';
+
+function getCart() {
+  return JSON.parse(localStorage.getItem(CART_KEY) || '[]');
+}
+
+function saveCart(cart) {
+  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+}
+
+function renderCart() {
+  const cart = getCart();
+  const itemsEl = document.getElementById('cartItems');
+  const totalsEl = document.getElementById('cartTotals');
+
+  if (!cart.length) {
+    itemsEl.innerHTML = '<p>Your cart is empty.</p>';
+    totalsEl.innerHTML = '';
+    return;
+  }
+
+  itemsEl.innerHTML = cart.map(item => `
+    <div class="cart-row" data-id="${item.id}" style="display:flex;align-items:center;justify-content:space-between;margin:8px 0;">
+      <div style="flex:1">
+        <strong>${item.title}</strong>
+        <div style="color:#666;font-size:0.95rem;">$${item.price.toFixed(2)}</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button onclick="changeQty('${item.id}', -1)">-</button>
+        <span>${item.qty}</span>
+        <button onclick="changeQty('${item.id}', 1)">+</button>
+        <button style="margin-left:8px;" onclick="removeItem('${item.id}')">Remove</button>
+      </div>
+    </div>
+  `).join('');
+
+  const subtotal = cart.reduce((s, it) => s + it.price * it.qty, 0);
+  totalsEl.innerHTML = `
+    <div style="margin-top:16px;">
+      <div><strong>Subtotal:</strong> $${subtotal.toFixed(2)}</div>
+      <button onclick="checkout()" style="margin-top:12px;padding:8px 12px;background:#ff6b6b;color:#fff;border:none;border-radius:4px;">Checkout</button>
+    </div>
+  `;
+}
+
+function changeQty(id, delta) {
+  const cart = getCart();
+  const item = cart.find(i => i.id === id);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) {
+    // remove
+    const idx = cart.findIndex(i => i.id === id);
+    cart.splice(idx, 1);
+  }
+  saveCart(cart);
+  renderCart();
+    updateCartCount();
+}
+
+function removeItem(id) {
+  const cart = getCart().filter(i => i.id !== id);
+  saveCart(cart);
+  renderCart();
+    updateCartCount();
+}
+
+function checkout() {
+  // placeholder - implement real checkout or clear cart
+  alert('Thanks for your order! (demo)'); 
+  localStorage.removeItem(CART_KEY);
+  renderCart();
+    updateCartCount();
+}
+
+function updateCartCount() {
+    const cart = getCart();
+    const totalQty = cart.reduce((s, i) => s + i.qty, 0);
+    const el = document.getElementById('cartCount');
+    if (el) el.textContent = totalQty;
+}
+
+/* Initialize cart rendering */
+document.addEventListener('DOMContentLoaded', () => {
+    renderCart();
+    updateCartCount();
+});
     </script>
 </body>
 </html>

@@ -99,43 +99,106 @@
 
 
         
-         .home-content {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: calc(100vh - 200px);
-            padding: 2rem;
+        /* Banner-style home section */
+        .home-content {
+            width: 100%;
+            padding: 3rem 0;
+            background: linear-gradient(180deg, #ffefef 0%, #f6d7d7 100%);
         }
-        
+
         .home-container {
-            background: rgb(250, 233, 233);
-            padding: 3rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            max-width: 800px;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            border-radius: 0;
+            box-shadow: none;
             text-align: center;
+            background: transparent;
         }
-        
+
         .home-container h1 {
-            color: #333;
-            margin-bottom: 1rem;
-            font-size: 2rem;
+            color: #222;
+            margin-bottom: 0.5rem;
+            font-size: 2.25rem;
         }
-        
+
         .divider {
             width: 100px;
             height: 4px;
             background-color: #ff6b6b;
-            margin: 1rem auto 2rem;
+            margin: 0.5rem auto 1.5rem;
         }
-        
+
         .home-container p {
-            color: #555;
-            line-height: 1.8;
-            margin-bottom: 1.5rem;
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 0;
             font-size: 1rem;
         }
-       
+
+        .menu-section {
+            display: flex;
+            justify-content: center;
+            padding: 2rem 0 4rem 0;
+        }
+        
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+            max-width: 900px;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .menu-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .menu-item img {
+            max-width: 100%;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .menu-item h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        
+        .menu-item p {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+        
+        .menu-item span {
+            font-weight: bold;
+            color: #ff6b6b;
+        }
+        
+
+        .cart-badge {
+            display: inline-block;
+            min-width: 20px;
+            padding: 2px 6px;
+            font-size: 0.8rem;
+            line-height: 1;
+            text-align: center;
+            border-radius: 999px;
+            background: #ff6b6b;
+            color: white;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
     </style>
 </head>
 <body>
@@ -143,25 +206,29 @@
         <div class="logo"><img src="logo2.png" alt="OrderNow Logo">OrderNow</div>
         <ul class="nav-links">
             <li><a href="navigation.html">Home</a></li>
-            <li><a href="cart.html">Cart</a></li>
+            <li><a href="cart.html">Cart <span id="cartCount" class="cart-badge">0</span></a></li>
             <li><a href="deals.html">Deals</a></li>
             <li><a href="aboutpage.html">About</a></li>
         </ul>
         <div class="auth-buttons" id="authButtons">
-            <!-- Will be populated by JavaScript -->
         </div>
     </nav>
     <div class="home-content">
         <div class="home-container">
-            <h1>Home</h1>
+            <h1><b>Menu</b></h1>
             <div class="divider"></div>
             
             <p>
-                This is home page
+                <em>Browse our items below and add them to your cart!</em>
             </p>
             
         </div>
     </div>
+
+    <!-- Menu section -->
+    <section class="menu-section">
+        <div id="menu" class="menu-grid"></div>
+    </section>
 
     <script>
         // Check if user is logged in
@@ -189,5 +256,67 @@
             window.location.href = 'navigation.html';
         }
     </script>
+    <script>
+/* Example product catalog - replace with your items */
+const products = [
+  { id: 'p1', title: 'Margherita Pizza', desc: 'Classic cheese & tomato', price: 9.99, img: 'Margherita-Pizza.webp' },
+  { id: 'p2', title: 'Burger Deluxe', desc: 'Beef, lettuce, cheese', price: 8.49, img: 'burger.jpg' },
+  { id: 'p3', title: 'Caesar Salad', desc: 'Crisp greens & dressing', price: 6.25, img: 'salad.jpg' }
+];
+
+const CART_KEY = 'orderNowCart';
+
+function renderMenu() {
+  const el = document.getElementById('menu');
+  el.innerHTML = products.map(p => `
+        <div class="menu-item">
+            <img src="${p.img}" alt="${p.title}">
+            <h3>${p.title}</h3>
+            <p>${p.desc}</p>
+            <div class="price">$${p.price.toFixed(2)}</div>
+            <button onclick="addToCart('${p.id}')">Add to cart</button>
+        </div>
+  `).join('');
+}
+
+function getCart() {
+  return JSON.parse(localStorage.getItem(CART_KEY) || '[]');
+}
+
+function saveCart(cart) {
+  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+}
+
+function addToCart(productId) {
+  const product = products.find(p => p.id === productId);
+  if (!product) return;
+
+  const cart = getCart();
+  const existing = cart.find(i => i.id === productId);
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    cart.push({ id: product.id, title: product.title, price: product.price, qty: 1 });
+  }
+  saveCart(cart);
+  alert(`${product.title} added to cart`);
+  // Optional: update a cart counter in the UI
+  updateCartCount();
+}
+
+function updateCartCount() {
+  const cart = getCart();
+  const totalQty = cart.reduce((s, i) => s + i.qty, 0);
+  // Example: place count into an element with id="cartCount"
+  const el = document.getElementById('cartCount');
+  if (el) el.textContent = totalQty;
+}
+
+/* Initialize */
+document.addEventListener('DOMContentLoaded', () => {
+  renderMenu();
+  updateCartCount();
+});
+</script>
 </body>
 </html>

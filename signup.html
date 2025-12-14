@@ -126,52 +126,6 @@
         </div>
     </div>
 
-    <script>
-        document.getElementById('signupForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            
-            const email = document.getElementById('email').value;
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            
-            // Validate passwords match
-            if (password !== confirmPassword) {
-                alert('Passwords do not match!');
-                return;
-            }
-            
-            // Validate password strength (at least 6 characters)
-            if (password.length < 6) {
-                alert('Password must be at least 6 characters long!');
-                return;
-            }
-            
-            // Get existing users from localStorage
-            let users = JSON.parse(localStorage.getItem('ordernowUsers')) || [];
-            
-            // Check if username already exists
-            if (users.some(user => user.username === username)) {
-                alert('Username already exists!');
-                return;
-            }
-            
-            // Create new user object
-            const newUser = {
-                email: email,
-                username: username,
-                password: password // Note: In production, NEVER store plain passwords!
-            };
-            
-            // Add user to array
-            users.push(newUser);
-            
-            // Save to localStorage
-            localStorage.setItem('ordernowUsers', JSON.stringify(users));
-            
-            alert('Sign up successful! You can now login.');
-            window.location.href = 'Login.html';
-        });
-    </script>
+    <script src="signup.js"></script>
 </body>
 </html>
