@@ -99,7 +99,6 @@
 
 
         
-        /* Banner-style home section */
         .home-content {
             width: 100%;
             padding: 3rem 0;
@@ -252,28 +251,23 @@
     </section>
 
     <script>
-        // Check if user is logged in
         const loggedInUser = localStorage.getItem('loggedInUser');
         const authButtons = document.getElementById('authButtons');
         
         if (loggedInUser) {
-            // User is logged in - show username and logout button
             authButtons.innerHTML = `
                 <span class="user-greeting">Welcome, ${loggedInUser}!</span>
                 <button class="btn btn-logout" onclick="logout()">Logout</button>
             `;
         } else {
-            // User not logged in - show login and signup buttons
             authButtons.innerHTML = `
                 <button class="btn btn-login" onclick="window.location.href='Login.html'">Login</button>
                 <button class="btn btn-signup" onclick="window.location.href='signup.html'">Sign Up</button>
             `;
         }
         
-        // Logout function
         function logout() {
             localStorage.removeItem('loggedInUser');
-            alert('You have been logged out.');
             window.location.href = 'navigation.html';
         }
     </script>
@@ -327,7 +321,6 @@ function addToCart(productId) {
     cart.push({ id: product.id, title: product.title, price: product.price, qty: 1 });
   }
   saveCart(cart);
-  alert(`${product.title} added to cart`);
   updateCartCount();
 }
 

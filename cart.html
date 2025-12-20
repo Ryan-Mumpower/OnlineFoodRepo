@@ -97,57 +97,50 @@
             opacity: 0.8;
         }
 
-         .cart-content {
+        .cart-content {
             display: flex;
             justify-content: center;
-            align-items: center;
-            min-height: calc(100vh - 200px);
+            align-items: flex-start;
+            min-height: calc(100vh - 180px);
             padding: 2rem;
         }
-        
-        .cart-container {
-            background: rgb(250, 233, 233);
-            padding: 3rem;
+
+        .checkout-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        @media (max-width: 880px) {
+            .checkout-wrapper { grid-template-columns: 1fr; }
+        }
+
+        .order-summary, .checkout-form {
+            background: #fff;
+            padding: 1rem;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            max-width: 800px;
-            text-align: center;
-        }
-        
-        .cart-container h1 {
-            color: #333;
-            margin-bottom: 1rem;
-            font-size: 2rem;
-        }
-        
-        .divider {
-            width: 100px;
-            height: 4px;
-            background-color: #ff6b6b;
-            margin: 1rem auto 2rem;
-        }
-        
-        .cart-container p {
-            color: #555;
-            line-height: 1.8;
-            margin-bottom: 1.5rem;
-            font-size: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
         }
 
-        .cart-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin: 8px 0;
-        }
-
-        .cart-row div {
-            flex: 1;
-        }
-
-        .cart-row button {
-            margin-left: 8px;
-        }
+        .order-summary h1 { margin: 0 0 0.5rem; }
+        .items { display:flex;flex-direction:column;gap:0.75rem;margin-top:1rem; }
+        .item{display:flex;align-items:center;justify-content:space-between;padding:0.6rem;border-radius:6px;border:1px solid #f0f0f0}
+        .item .meta{flex:1;margin-left:0.75rem}
+        .item .title{font-weight:600}
+        .qty{display:flex;gap:0.5rem;align-items:center}
+        .qty input{width:56px;padding:0.25rem;text-align:center}
+        .remove{background:transparent;border:none;color:#666;cursor:pointer}
+        .summary-footer{margin-top:1rem;border-top:1px dashed #eee;padding-top:0.75rem;text-align:right}
+        .checkout-form label{display:block;margin-bottom:0.75rem}
+        .checkout-form input[type=text], .checkout-form input[type=email]{width:100%;padding:0.5rem;border:1px solid #ddd;border-radius:6px}
+        .card fieldset{border:1px solid #eee;padding:0.5rem;border-radius:6px;margin:0 0 0.75rem}
+        .card-row{display:flex;gap:0.5rem}
+        .form-actions{margin-top:0.75rem;text-align:right}
+        .btn-primary{background:#ff6b6b;border:none;color:#fff;padding:0.6rem 1rem;border-radius:6px;cursor:pointer}
+        .btn-primary:disabled{opacity:0.6;cursor:not-allowed}
+        .message{margin-top:0.75rem;color:green;font-weight:600}
 
         .cart-badge {
             display: inline-block;
@@ -174,138 +167,184 @@
             <li><a href="aboutpage.html">About</a></li>
         </ul>
         <div class="auth-buttons" id="authButtons">
-            <!-- Will be populated by JavaScript -->
+            
         </div>
     </nav>
 
      <div class="cart-content">
-        <div class="cart-container">
-            <h1>Cart</h1>
-            <div class="divider"></div>
-            
-            <p>
-                This is your cart
-            </p>
-            
-            <div id="cartItems"></div>
-            <div id="cartTotals"></div>
-            
+        <div class="checkout-wrapper">
+            <section class="order-summary">
+                <h1>Cart</h1>
+                <div class="divider"></div>
+                <div id="cartItems" class="items"></div>
+                <div class="summary-footer">
+                    <div>Subtotal: <span id="subtotal">$0.00</span></div>
+                    <div>Tax (8%): <span id="tax">$0.00</span></div>
+                    <div class="total">Total: <strong id="total">$0.00</strong></div>
+                </div>
+            </section>
+
+            <section class="checkout-form">
+                <h2>Checkout</h2>
+                <form id="checkoutForm" novalidate>
+                    <label>Name
+                        <input type="text" id="name" required>
+                    </label>
+                    <label>Email
+                        <input type="email" id="email" required>
+                    </label>
+                    <label>Address
+                        <input type="text" id="address" required>
+                    </label>
+
+                    <fieldset class="card">
+                        <legend>Card</legend>
+                        <label>Card number
+                            <input type="text" id="cardNumber" inputmode="numeric" maxlength="19" placeholder="4242 4242 4242 4242" required>
+                        </label>
+                        <div class="card-row">
+                            <label>Expiry (MM/YY)
+                                <input type="text" id="expiry" maxlength="5" placeholder="MM/YY" required>
+                            </label>
+                            <label>CVV
+                                <input type="text" id="cvv" maxlength="4" inputmode="numeric" required>
+                            </label>
+                        </div>
+                    </fieldset>
+
+                    <div class="form-actions">
+                        <button type="button" id="payBtn" class="btn-primary">Pay <span id="payAmount">$0.00</span></button>
+                    </div>
+                </form>
+                <div id="message" class="message" role="status" aria-live="polite"></div>
+            </section>
         </div>
     </div>
 
     <script>
-        // Check if user is logged in
         const loggedInUser = localStorage.getItem('loggedInUser');
         const authButtons = document.getElementById('authButtons');
         
         if (loggedInUser) {
-            // User is logged in - show username and logout button
             authButtons.innerHTML = `
                 <span class="user-greeting">Welcome, ${loggedInUser}!</span>
                 <button class="btn btn-logout" onclick="logout()">Logout</button>
             `;
         } else {
-            // User not logged in - show login and signup buttons
             authButtons.innerHTML = `
                 <button class="btn btn-login" onclick="window.location.href='Login.html'">Login</button>
                 <button class="btn btn-signup" onclick="window.location.href='signup.html'">Sign Up</button>
             `;
         }
-        
-        // Logout function
+
         function logout() {
             localStorage.removeItem('loggedInUser');
-            alert('You have been logged out.');
             window.location.href = 'navigation.html';
         }
 
         const CART_KEY = 'orderNowCart';
 
-function getCart() {
-  return JSON.parse(localStorage.getItem(CART_KEY) || '[]');
-}
+        function getCart() { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); }
+        function saveCart(cart) { localStorage.setItem(CART_KEY, JSON.stringify(cart)); }
+        function currency(v) { return `$${v.toFixed(2)}`; }
 
-function saveCart(cart) {
-  localStorage.setItem(CART_KEY, JSON.stringify(cart));
-}
+        function renderCart() {
+            const cart = getCart();
+            const itemsEl = document.getElementById('cartItems');
+            if (!cart.length) {
+                itemsEl.innerHTML = '<div class="small">Your cart is empty. <a href="navigation.html">Go back to menu</a></div>';
+                document.getElementById('payBtn').disabled = true;
+                updateTotals();
+                return;
+            }
 
-function renderCart() {
-  const cart = getCart();
-  const itemsEl = document.getElementById('cartItems');
-  const totalsEl = document.getElementById('cartTotals');
+            itemsEl.innerHTML = cart.map(i => `
+                <div class="item" data-id="${i.id}">
+                  <div class="meta">
+                    <div class="title">${i.title}</div>
+                    <div class="small">${currency(i.price)} each</div>
+                  </div>
+                  <div class="qty">
+                    <input type="number" min="1" value="${i.qty}" class="qtyInput">
+                    <button class="remove">Remove</button>
+                  </div>
+                </div>
+            `).join('');
 
-  if (!cart.length) {
-    itemsEl.innerHTML = '<p>Your cart is empty.</p>';
-    totalsEl.innerHTML = '';
-    return;
-  }
+            itemsEl.querySelectorAll('.qtyInput').forEach(el => {
+                el.addEventListener('change', e => {
+                    const newQty = Math.max(1, parseInt(e.target.value) || 1);
+                    const li = e.target.closest('.item');
+                    const id = li.dataset.id;
+                    const cart = getCart();
+                    const entry = cart.find(x => x.id === id);
+                    if (entry) { entry.qty = newQty; saveCart(cart); updateTotals(); updateNavCount(); }
+                    e.target.value = newQty;
+                });
+            });
 
-  itemsEl.innerHTML = cart.map(item => `
-    <div class="cart-row" data-id="${item.id}" style="display:flex;align-items:center;justify-content:space-between;margin:8px 0;">
-      <div style="flex:1">
-        <strong>${item.title}</strong>
-        <div style="color:#666;font-size:0.95rem;">$${item.price.toFixed(2)}</div>
-      </div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <button onclick="changeQty('${item.id}', -1)">-</button>
-        <span>${item.qty}</span>
-        <button onclick="changeQty('${item.id}', 1)">+</button>
-        <button style="margin-left:8px;" onclick="removeItem('${item.id}')">Remove</button>
-      </div>
-    </div>
-  `).join('');
+            itemsEl.querySelectorAll('.remove').forEach(btn => btn.addEventListener('click', e => {
+                const id = e.target.closest('.item').dataset.id;
+                let cart = getCart(); cart = cart.filter(x => x.id !== id); saveCart(cart); renderCart(); updateNavCount();
+            }));
 
-  const subtotal = cart.reduce((s, it) => s + it.price * it.qty, 0);
-  totalsEl.innerHTML = `
-    <div style="margin-top:16px;">
-      <div><strong>Subtotal:</strong> $${subtotal.toFixed(2)}</div>
-      <button onclick="checkout()" style="margin-top:12px;padding:8px 12px;background:#ff6b6b;color:#fff;border:none;border-radius:4px;">Checkout</button>
-    </div>
-  `;
-}
+            updateTotals();
+        }
 
-function changeQty(id, delta) {
-  const cart = getCart();
-  const item = cart.find(i => i.id === id);
-  if (!item) return;
-  item.qty += delta;
-  if (item.qty <= 0) {
-    // remove
-    const idx = cart.findIndex(i => i.id === id);
-    cart.splice(idx, 1);
-  }
-  saveCart(cart);
-  renderCart();
-    updateCartCount();
-}
+        function updateTotals() {
+            const cart = getCart();
+            const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+            const tax = subtotal * 0.08; // 8%
+            const total = subtotal + tax;
+            document.getElementById('subtotal').textContent = currency(subtotal);
+            document.getElementById('tax').textContent = currency(tax);
+            document.getElementById('total').textContent = currency(total);
+            const payBtn = document.getElementById('payBtn'); if (payBtn) payBtn.disabled = cart.length === 0;
+            document.getElementById('payAmount').textContent = currency(total);
+        }
 
-function removeItem(id) {
-  const cart = getCart().filter(i => i.id !== id);
-  saveCart(cart);
-  renderCart();
-    updateCartCount();
-}
+        function updateNavCount() {
+            const cart = getCart();
+            const totalQty = cart.reduce((s, i) => s + i.qty, 0);
+            const el = document.getElementById('cartCount'); if (el) el.textContent = totalQty;
+        }
 
-function checkout() {
-  // placeholder - implement real checkout or clear cart
-  alert('Thanks for your order! (demo)'); 
-  localStorage.removeItem(CART_KEY);
-  renderCart();
-    updateCartCount();
-}
+        function validateForm() {
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const address = document.getElementById('address').value.trim();
+            const card = document.getElementById('cardNumber').value.replace(/\s+/g, '');
+            const expiry = document.getElementById('expiry').value.trim();
+            const cvv = document.getElementById('cvv').value.trim();
 
-function updateCartCount() {
-    const cart = getCart();
-    const totalQty = cart.reduce((s, i) => s + i.qty, 0);
-    const el = document.getElementById('cartCount');
-    if (el) el.textContent = totalQty;
-}
+            if (!name || !email || !address) return 'Please complete contact fields.';
+            if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return 'Enter a valid email.';
+            if (!/^\d{12,19}$/.test(card)) return 'Enter a valid card number (12-19 digits).';
+            if (!/^\d{2}\/\d{2}$/.test(expiry)) return 'Expiry must be in MM/YY format.';
+            if (!/^\d{3,4}$/.test(cvv)) return 'Enter a valid CVV.';
+            return null;
+        }
 
-/* Initialize cart rendering */
-document.addEventListener('DOMContentLoaded', () => {
-    renderCart();
-    updateCartCount();
-});
+        function clearForm() { ['name', 'email', 'address', 'cardNumber', 'expiry', 'cvv'].forEach(id => document.getElementById(id).value = ''); }
+        function showMessage(msg, success = true) { const el = document.getElementById('message'); el.textContent = msg; el.style.color = success ? 'green' : 'red'; }
+
+        function simulatePayment() {
+            const payBtn = document.getElementById('payBtn');
+            payBtn.disabled = true; payBtn.textContent = 'Processing...'; showMessage('Processing payment...');
+            setTimeout(() => {
+                saveCart([]);
+                renderCart(); updateNavCount(); clearForm();
+                showMessage('Payment successful! Thank you for your order.');
+                payBtn.disabled = false; payBtn.textContent = `Pay ${document.getElementById('payAmount').textContent}`;
+            }, 1200);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCart(); updateNavCount();
+            const payBtn = document.getElementById('payBtn'); if (payBtn) payBtn.addEventListener('click', () => {
+                const err = validateForm(); if (err) { showMessage(err, false); return; } simulatePayment();
+            });
+        });
     </script>
 </body>
 </html>

@@ -123,17 +123,13 @@
     const password = document.getElementById('pword').value;
     
     if (username === 'Admin' && password === 'Password123') {
-        // Store username in localStorage
         localStorage.setItem('loggedInUser', username);
-        alert('Login successful!');
         window.location.href = 'navigation.html';
     } else {
-        // Check against registered users
         let users = JSON.parse(localStorage.getItem('ordernowUsers')) || [];
         let user = users.find(u => u.username === username && u.password === password);
         
         if (user) {
-            // Store username in localStorage
             localStorage.setItem('loggedInUser', username);
             alert('Login successful!');
             window.location.href = 'navigation.html';

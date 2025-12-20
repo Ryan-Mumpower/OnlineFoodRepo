@@ -146,7 +146,7 @@
             <li><a href="aboutpage.html">About</a></li>
         </ul>
         <div class="auth-buttons" id="authButtons">
-            <!-- Will be populated by JavaScript -->
+          
         </div>
     </nav>
 
@@ -164,28 +164,23 @@
 
 
     <script>
-        // Check if user is logged in
         const loggedInUser = localStorage.getItem('loggedInUser');
         const authButtons = document.getElementById('authButtons');
         
         if (loggedInUser) {
-            // User is logged in - show username and logout button
             authButtons.innerHTML = `
                 <span class="user-greeting">Welcome, ${loggedInUser}!</span>
                 <button class="btn btn-logout" onclick="logout()">Logout</button>
             `;
         } else {
-            // User not logged in - show login and signup buttons
             authButtons.innerHTML = `
                 <button class="btn btn-login" onclick="window.location.href='Login.html'">Login</button>
                 <button class="btn btn-signup" onclick="window.location.href='signup.html'">Sign Up</button>
             `;
         }
         
-        // Logout function
         function logout() {
             localStorage.removeItem('loggedInUser');
-            alert('You have been logged out.');
             window.location.href = 'navigation.html';
         }
     </script>
